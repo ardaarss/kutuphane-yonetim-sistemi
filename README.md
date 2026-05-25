@@ -29,3 +29,19 @@ Projeyi klonlayın:
 
 ```bash
 git clone https://github.com/ardaarss/kutuphane-yonetim-sistemi.git
+
+## Veritabanı Kurulumu
+
+Bu proje MSSQL kullanmaktadır.
+
+1. SQL Server Management Studio uygulamasını açın.
+2. `database.sql` dosyasını açın.
+3. Dosyayı çalıştırarak `KutuphaneDB` veritabanını oluşturun.
+4. `.env.example` dosyasını `.env` olarak kopyalayın.
+5. `.env` içindeki veritabanı bilgilerini kendi SQL Server ayarlarınıza göre düzenleyin.
+
+Varsayılan admin kullanıcı:
+
+```text
+E-posta: admin@kutuphane.com
+Şifre: admin123
