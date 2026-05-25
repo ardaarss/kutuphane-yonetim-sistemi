@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="display-6 fw-bold text-dark">Kütüphane Hakkında</h2>
+        <p class="text-muted">Güncel durum ve istatistikler</p>
+    </div>
+    <div>
+        <span class="badge bg-light text-dark border p-2">
+            <i class="fas fa-calendar-alt"></i> Bugün: <span id="tarih"></span>
+        </span>
+    </div>
+</div>
+
+<div class="row text-center mb-5">
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-primary h-100 py-4 shadow border-0" style="border-radius: 15px;">
+            <div class="card-body">
+                <div class="display-4 mb-2"><i class="fas fa-book"></i></div>
+                <h5 class="card-title text-uppercase opacity-75">Toplam Kitap</h5>
+                <p class="card-text display-6 fw-bold">{{ t_kitap }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-success h-100 py-4 shadow border-0" style="border-radius: 15px;">
+            <div class="card-body">
+                <div class="display-4 mb-2"><i class="fas fa-users"></i></div>
+                <h5 class="card-title text-uppercase opacity-75">Kayıtlı Üyeler</h5>
+                <p class="card-text display-6 fw-bold">{{ t_uye }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-warning text-dark h-100 py-4 shadow border-0" style="border-radius: 15px;">
+            <div class="card-body">
+                
+                {% if session.get('rol') == 'uye' %}
+                    <div class="display-4 mb-2"><i class="fas fa-hand-holding-heart"></i></div>
+                    <h5 class="card-title text-uppercase opacity-75">Elimdeki Kitaplar</h5>
+                    <p class="card-text display-6 fw-bold">{{ t_odunc }}</p>
+                
+                {% else %}
+                    <div class="display-4 mb-2"><i class="fas fa-book-reader"></i></div>
+                    <h5 class="card-title text-uppercase opacity-75">Ödünç Verilen</h5>
+                    <p class="card-text display-6 fw-bold">{{ t_odunc }}</p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if session.get('giris_yapildi') %}
+
+    <div class="row">
+        
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow border-0" style="border-radius: 12px;">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="mb-0 text-primary"><i class="fas fa-history me-2"></i> Son İşlemler</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Üye Adı</th>
+                                <th>Kitap</th>
+                                <th>Tarih</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for hareket in hareketler %}
+                            <tr>
+                                <td class="fw-bold">{{ hareket['ad_soyad'] }}</td>
+                                <td>{{ hareket['baslik'] }}</td>
+                                <td class="text-muted small">{{ hareket['alis_tarihi'] }}</td>
+                                <td>
+                                    {% if hareket['durum'] == 'Aktif' %}
+                                        <span class="badge bg-warning text-dark">Okuyor</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Teslim Etti</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">Henüz hiç işlem yapılmamış.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if session.get('rol') == 'admin' %}
+                <div class="card-footer bg-white text-center py-3">
+                    <a href="/gecmis" class="text-decoration-none fw-bold">Tüm Kayıtları Gör &rarr;</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow border-0 mb-4" style="border-radius: 12px;">
+                <div class="card-header bg-danger text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i> Geciken Kitaplar</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for gecikme in gecikenler %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fw-bold text-danger">{{ gecikme['ad_soyad'] }}</span>
+                                <br>
+                                <small class="text-muted">{{ gecikme['baslik'] }}</small>
+                            </div>
+                            <span class="badge bg-danger rounded-pill">{{ gecikme['gecen_gun'] }} Gün</span>
+                        </li>
+                        {% else %}
+                        <li class="list-group-item text-center py-4 text-success">
+                            <i class="fas fa-check-circle fa-2x mb-2"></i>
+                            <br>Harika! Süresi geçen kitap yok.
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+
+    <div class="p-5 mb-4 bg-light rounded-3 shadow-sm text-center">
+        <div class="container-fluid py-5">
+            <i class="fas fa-lock fa-4x text-secondary mb-4"></i>
+            <h1 class="display-6 fw-bold">Detayları Görmek İçin Giriş Yapın</h1>
+            <p class="col-md-8 fs-5 mx-auto text-muted mb-4">
+                Kitap hareketlerini takip etmek, rezervasyon yapmak ve gecikme durumlarını kontrol etmek için lütfen hesabınıza giriş yapın.
+            </p>
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <a href="/giris" class="btn btn-primary btn-lg px-4 gap-3">
+                    <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                </a>
+                <a href="/kayit" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fas fa-user-plus"></i> Kayıt Ol
+                </a>
+            </div>
+        </div>
+    </div>
+
+{% endif %}
+
+<script>
+    document.getElementById('tarih').textContent = new Date().toLocaleDateString('tr-TR');
+</script>
+
+{% endblock %}

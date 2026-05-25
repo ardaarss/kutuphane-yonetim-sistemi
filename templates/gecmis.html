@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="fas fa-history"></i> İşlem Geçmişi</h2>
+    <a href="/" class="btn btn-outline-secondary">Panele Dön</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>İşlem ID</th>
+                    <th>Üye Adı</th>
+                    <th>Kitap</th>
+                    <th>Alış Tarihi</th>
+                    <th>İade Tarihi</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for kayit in kayitlar %}
+                <tr class="{% if kayit['durum'] == 'Teslim Edildi' %} table-success {% endif %}" style="--bs-table-bg-opacity: .1;">
+                    <td>#{{ kayit['id'] }}</td>
+                    <td class="fw-bold">{{ kayit['ad_soyad'] }}</td>
+                    <td>{{ kayit['baslik'] }}</td>
+                    <td>{{ kayit['alis_tarihi'] }}</td>
+                    
+                    <td>
+                        {% if kayit['iade_tarihi'] %}
+                            {{ kayit['iade_tarihi'] }}
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if kayit['durum'] == 'Aktif' %}
+                            <span class="badge bg-warning text-dark">Okuyor</span>
+                        {% else %}
+                            <span class="badge bg-success">Teslim Etti</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">Henüz hiç işlem kaydı yok.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-md-8"> <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="fas fa-edit"></i> Kitap Düzenle</h5>
+            </div>
+            <div class="card-body">
+                <form action="/kitaplar/duzenle/{{ kitap['id'] }}" method="POST">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Kitap Adı</label>
+                            <input type="text" name="baslik" class="form-control" value="{{ kitap['baslik'] }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Yazar</label>
+                            <input type="text" name="yazar" class="form-control" value="{{ kitap['yazar'] }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tür</label>
+                            <select name="tur" class="form-select">
+                                <option value="Roman" {% if kitap['tur'] == 'Roman' %} selected {% endif %}>Roman</option>
+                                <option value="Tarih" {% if kitap['tur'] == 'Tarih' %} selected {% endif %}>Tarih</option>
+                                <option value="Bilim" {% if kitap['tur'] == 'Bilim' %} selected {% endif %}>Bilim</option>
+                                <option value="Felsefe" {% if kitap['tur'] == 'Felsefe' %} selected {% endif %}>Felsefe</option>
+                                <option value="Çocuk" {% if kitap['tur'] == 'Çocuk' %} selected {% endif %}>Çocuk</option>
+                                </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Stok Adedi</label>
+                            <input type="number" name="stok" class="form-control" value="{{ kitap['stok'] }}" min="0">
+                        </div>
+                    </div>
+
+                    <div class="row bg-light p-2 rounded mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Sayfa Sayısı</label>
+                            <input type="number" name="sayfa_sayisi" class="form-control" value="{{ kitap['sayfa_sayisi'] }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Yayınevi</label>
+                            <input type="text" name="yayinevi" class="form-control" value="{{ kitap['yayinevi'] }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Basım Yılı</label>
+                            <input type="number" name="basim_yili" class="form-control" value="{{ kitap['basim_yili'] }}">
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/kitaplar" class="btn btn-secondary me-md-2">İptal</a>
+                        <button type="submit" class="btn btn-warning">Değişiklikleri Kaydet</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

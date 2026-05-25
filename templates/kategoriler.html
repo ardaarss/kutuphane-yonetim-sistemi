@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Yeni Kategori Ekle</h5>
+            </div>
+            <div class="card-body">
+                <form action="/kategoriler" method="POST">
+                    <div class="mb-3">
+                        <label>Kategori Adı</label>
+                        <input type="text" name="kategori_adi" class="form-control" placeholder="Örn: Dergi" required>
+                    </div>
+                    <button type="submit" class="btn btn-info text-white w-100">Ekle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Mevcut Kategoriler</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <tbody>
+                        {% for kat in kategoriler %}
+                        <tr>
+                            <td class="fs-5">{{ kat['ad'] }}</td>
+                            <td class="text-end">
+                                <a href="/kategoriler/sil/{{ kat['id'] }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Silmek istediğine emin misin?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

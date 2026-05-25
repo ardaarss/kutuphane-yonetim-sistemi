@@ -1,0 +1,156 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-4">
+        <h2><i class="fas fa-book"></i> Kitap Listesi</h2>
+    </div>
+    
+    <div class="col-md-4">
+        <form action="{{ url_for('kitap_ara') }}" method="GET" class="d-flex mb-3">
+            <input class="form-control me-2" type="search" name="arama" placeholder="Kitap veya Yazar Ara...">
+            <button class="btn btn-outline-success" type="submit">Ara</button>
+    
+            <a href="{{ url_for('kitaplar') }}" class="btn btn-outline-secondary ms-2">Tümünü Gör</a>
+        </form>
+    </div>
+
+    <div class="col-md-4 text-end">
+        {% if session.get('rol') == 'admin' %}
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kitapEkleModal">
+                <i class="fas fa-plus"></i> Yeni Kitap
+            </button>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Kitap Adı</th>
+                    <th>Yazar</th>
+                    <th>Yayınevi</th>
+                    <th>Yıl</th>
+                    <th>Tür</th>
+                    <th>Stok</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for kitap in kitaplar %}
+                <tr>
+                    <td>{{ kitap['id'] }}</td>
+                    <td class="fw-bold">{{ kitap['baslik'] }}</td>
+                    <td>{{ kitap['yazar'] }}</td>
+                    <td><small class="text-muted">{{ kitap['yayinevi'] }}</small></td>
+                    <td><span class="badge bg-light text-dark border">{{ kitap['basim_yili'] }}</span></td>
+                    <td><span class="badge bg-secondary">{{ kitap['tur'] }}</span></td>
+                    
+                    <td>
+                        {% if kitap['stok'] > 0 %}
+                            <span class="badge bg-success">{{ kitap['stok'] }} Adet</span>
+                        {% else %}
+                            <span class="badge bg-danger">Tükendi</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        {% if session.get('rol') == 'admin' %}
+                            <a href="/kitaplar/duzenle/{{ kitap['id'] }}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="/kitaplar/sil/{{ kitap['id'] }}" class="btn btn-sm btn-danger" onclick="return confirm('Silmek istediğine emin misin?')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+
+                        {% elif session.get('rol') == 'uye' %}
+                            {% if kitap['stok'] > 0 %}
+                                <form action="/rezervasyon/talep/{{ kitap['id'] }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-hand-paper"></i> İste
+                                    </button>
+                                </form>
+                            {% else %}
+                                <button class="btn btn-sm btn-secondary" disabled>Stok Yok</button>
+                            {% endif %}
+
+                        {% else %}
+                            <a href="/giris" class="btn btn-sm btn-outline-secondary" style="font-size: 0.8rem;">
+                                <i class="fas fa-lock"></i> Giriş Yap
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted">Henüz kitap eklenmemiş veya aramanızla eşleşen kayıt yok.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if session.get('rol') == 'admin' %}
+<div class="modal fade" id="kitapEkleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Yeni Kitap Ekle</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/kitaplar" method="POST">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Kitap Adı</label>
+                            <input type="text" name="baslik" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Yazar</label>
+                            <input type="text" name="yazar" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Tür</label>
+                            <select name="tur" class="form-select">
+                                {% for kat in kategoriler %}
+                                    <option value="{{ kat['ad'] }}">{{ kat['ad'] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Stok Adedi</label>
+                            <input type="number" name="stok" class="form-control" value="1" min="1">
+                        </div>
+                    </div>
+                    <div class="row bg-light p-2 rounded">
+                        <div class="col-md-4 mb-3">
+                            <label>Sayfa Sayısı</label>
+                            <input type="number" name="sayfa_sayisi" class="form-control" placeholder="Örn: 300">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Yayınevi</label>
+                            <input type="text" name="yayinevi" class="form-control" placeholder="Yayınevi Adı">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Basım Yılı</label>
+                            <input type="number" name="basim_yili" class="form-control" placeholder="2023">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <i class="fas fa-user-circle fa-5x my-3"></i>
+                <h4>{{ uye['ad_soyad'] }}</h4>
+                <p class="mb-2">{{ uye['rol']|upper }}</p>
+            </div>
+            <div class="card-body">
+                <p><strong><i class="fas fa-phone"></i> Telefon:</strong> {{ uye['telefon'] }}</p>
+                <p><strong><i class="fas fa-envelope"></i> E-posta:</strong> {{ uye['eposta'] }}</p>
+                <p><strong><i class="fas fa-calendar-alt"></i> Kayıt Tarihi:</strong> {{ uye['kayit_tarihi'] }}</p>
+                <hr>
+                <p class="text-center"><strong>Toplam Okunan:</strong> {{ toplam }} Kitap</p>
+            </div>
+            
+            {% if session.get('rol') == 'admin' %}
+            <div class="card-footer text-center">
+                <a href="/uyeler/sil/{{ uye['id'] }}" class="btn btn-danger w-100" onclick="return confirm('Üyeyi silmek istediğine emin misin?')">
+                    <i class="fas fa-trash"></i> Üyeyi Sil
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        
+        <div class="card shadow mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="fas fa-book-open"></i> Şu An Okudukları</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Kitap Adı</th>
+                            <th>Alış Tarihi</th>
+                            <th>Geçen Süre</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for odunc in elindekiler %}
+                        <tr>
+                            <td class="fw-bold">{{ odunc['baslik'] }}</td>
+                            <td>{{ odunc['alis_tarihi'] }}</td>
+                            <td>
+                                {% if odunc['gecen_gun'] %}
+                                    <span class="badge bg-danger rounded-pill">{{ odunc['gecen_gun'] }} Gün</span>
+                                {% else %}
+                                    <span class="badge bg-secondary rounded-pill">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if session.get('rol') == 'admin' %}
+                                    <a href="/odunc/iade/{{ odunc['id'] }}" class="btn btn-sm btn-primary" onclick="return confirm('Kitabı teslim aldığınızı onaylıyor musunuz?')">
+                                        <i class="fas fa-undo"></i> İade Al
+                                    </a>
+                                {% else %}
+                                    <span class="badge bg-info text-dark">
+                                        <i class="fas fa-book-reader"></i> Okuyor
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Şu an elinde kitap yok.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Okuma Geçmişi</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for kayit in gecmis %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ kayit['baslik'] }}</span>
+                        <small class="text-muted">İade Tarihi: {{ kayit['iade_tarihi'] }}</small>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-center text-muted">Henüz geçmiş kayıt yok.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
