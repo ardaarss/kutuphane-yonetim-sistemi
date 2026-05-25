@@ -13,7 +13,6 @@ Flask ve MSSQL kullanılarak geliştirilmiş web tabanlı bir kütüphane yönet
 - [Ortam Değişkenleri](#ortam-değişkenleri)
 - [Uygulamayı Çalıştırma](#uygulamayı-çalıştırma)
 - [Varsayılan Admin Bilgileri](#varsayılan-admin-bilgileri)
-- [Geliştirilebilir Yönler](#geliştirilebilir-yönler)
 - [Geliştirici](#geliştirici)
 
 ## Proje Hakkında
