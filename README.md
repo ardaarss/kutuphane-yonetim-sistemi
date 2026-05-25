@@ -192,29 +192,8 @@ Admin kullanıcılar şu işlemleri yapabilir:
 - Rezervasyon talebi oluşturma
 - Kendi ödünç kitaplarını ve geçmişini görüntüleme
 
-## Güvenlik Notları
-
-- Kullanıcı şifreleri düz metin olarak saklanmaz.
-- Şifreler `Werkzeug` ile hash'lenerek veritabanına kaydedilir.
-- Gizli anahtar ve veritabanı bilgileri `.env` dosyasında tutulur.
-- Admin işlemleri rol kontrolü ile sınırlandırılmıştır.
-
-## Geliştirilebilir Yönler
-
-Projeye ileride şu özellikler eklenebilir:
-
-- Şifre değiştirme sayfası
-- Profil güncelleme ekranı
-- Kitap kapak görseli ekleme
-- Daha detaylı arama ve filtreleme
-- Admin panelinde istatistik grafikleri
-- E-posta bildirim sistemi
-- Unit test yapısı
-- Docker desteği
-- API endpoint'leri
-
 ## Geliştirici
 
 **Arda Arslan**
 
-GitHub: [ardaars](https://github.com/ardaars)
+GitHub: [ardaarss](https://github.com/ardaarss)
